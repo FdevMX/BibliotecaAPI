@@ -1,0 +1,6 @@
+@Biblioteca.API_HostAddress = http://localhost:5015
+
+GET {{Biblioteca.API_HostAddress}}/swagger/
+Accept: application/json
+
+###
