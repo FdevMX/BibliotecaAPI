@@ -158,5 +158,29 @@ namespace Biblioteca.Core.BL.Services
             }
 
         }
+
+
+
+
+        /*
+        public Task<bool> EliminarUsuario(Usuarios usuarios)
+        {
+            bool result = false;
+            using (var conexion = new Data.SQLServer.BibliotecaDataContext())
+            {
+                var consulta = (from c in conexion.Usuarios
+                                where c.usuario_id == usuarios.usuario_id
+                                select c).FirstOrDefault();
+
+                if (consulta != null)
+                {
+                    conexion.Usuarios.Remove(consulta);
+                    result = conexion.SaveChanges() > 0;
+                }
+            }
+
+            return Task.FromResult(result);
+        }
+        */
     }
 }
