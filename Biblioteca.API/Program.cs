@@ -14,6 +14,8 @@ builder.Services.AddControllers();
 //Agregar inyeccion de dependencias
 builder.Services.AddTransient<ISeguridad, SeguridadService>();
 builder.Services.AddTransient<IUsuarios, UsuariosService>();
+builder.Services.AddTransient<ILibros, LibrosService>();
+
 
 //Activar Swagger
 builder.Services.AddSwaggerGen();
