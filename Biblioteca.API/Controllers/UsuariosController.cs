@@ -39,8 +39,6 @@ namespace Biblioteca.API.Controllers
             }
         }
 
-
-
         [HttpGet("ListarUsuarios")]
         public async Task<IActionResult> ListarUsuarios()
         {
