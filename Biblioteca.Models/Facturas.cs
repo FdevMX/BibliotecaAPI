@@ -13,7 +13,7 @@ namespace Biblioteca.Models
         public int factura_id { get; set; }
         public int prestamo_id { get; set; }
         public DateOnly fecha_emision { get; set; }
-        public double monto_total { get; set; }
+        public decimal? monto_total { get; set; }
         public string? detalles_pago { get; set; }
         public string? estado_factura { get; set; }
     }
