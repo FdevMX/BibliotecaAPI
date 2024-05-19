@@ -17,6 +17,8 @@ builder.Services.AddTransient<IUsuarios, UsuariosService>();
 builder.Services.AddTransient<ILibros, LibrosService>();
 
 
+builder.Services.AddTransient<IAutores, AutoresService>();
+
 //Activar Swagger
 builder.Services.AddSwaggerGen();
 
@@ -30,7 +32,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//Validar que se ejecute swagger solo en modo programadorç
+//Validar que se ejecute swagger solo en modo programadorÃ§
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
