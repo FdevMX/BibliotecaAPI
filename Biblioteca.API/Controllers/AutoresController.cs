@@ -18,16 +18,26 @@ namespace Biblioteca.API.Controllers
         [HttpPost("GuardarAutor")]
         public async Task<IActionResult> GuardarAutor([FromBody] Autores autores)
         {
-            var resultado = await _autores.GuardarAutor(autores);
-            if (resultado == false)
+            try
             {
-                return BadRequest(resultado);
+                var resultado = await _autores.GuardarAutor(autores);
+
+                if (resultado)
+                {
+                    return Ok(new { mensaje = "Autor agregado correctamente" });
+                }
+                else
+                {
+                    return BadRequest(new { mensaje = "Error al agregar el autor" });
+                }
             }
-            return Ok(resultado);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
+            }
         }
 
         [HttpGet("ListarAutores")]
-
         public async Task<IActionResult> ListarAutores()
         {
             var resultado = await this._autores.ListarAutores();
@@ -35,7 +45,6 @@ namespace Biblioteca.API.Controllers
         }
 
         [HttpPut("ActualizarAutor")]
-
         public async Task<IActionResult> ActualizarAutor([FromBody] Autores autores)
         {
             try
@@ -48,7 +57,7 @@ namespace Biblioteca.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al actualizar el libro" });
+                    return BadRequest(new { mensaje = "Error al actualizar el autor" });
                 }
             }
             catch (Exception ex)
@@ -70,7 +79,7 @@ namespace Biblioteca.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al eliminarar el autor" });
+                    return BadRequest(new { mensaje = "Error al eliminar el autor" });
                 }
             }
             catch (Exception ex)

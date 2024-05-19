@@ -15,7 +15,5 @@ namespace Biblioteca.Core.BL.Interfaces
         Task<bool> ActualizarAutor(Autores autores);
         Task<bool> EliminarAutor(int AutorId);
         Task<List<Autores>> ListarAutores();
-
-
     }
 }
