@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 //Agregar inyeccion de dependencias
 builder.Services.AddTransient<ISeguridad, SeguridadService>();
 builder.Services.AddTransient<IUsuarios, UsuariosService>();
+
 builder.Services.AddTransient<IAutores, AutoresService>();
 
 //Activar Swagger
@@ -29,7 +30,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//Validar que se ejecute swagger solo en modo programadorç
+//Validar que se ejecute swagger solo en modo programadorÃ§
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
