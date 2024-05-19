@@ -15,9 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<ISeguridad, SeguridadService>();
 builder.Services.AddTransient<IUsuarios, UsuariosService>();
 builder.Services.AddTransient<ILibros, LibrosService>();
-
-
 builder.Services.AddTransient<IAutores, AutoresService>();
+builder.Services.AddTransient<IPrestamos, PrestamosService>();
 
 //Activar Swagger
 builder.Services.AddSwaggerGen();
