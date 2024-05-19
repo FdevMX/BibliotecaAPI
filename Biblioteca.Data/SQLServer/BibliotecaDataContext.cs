@@ -14,8 +14,8 @@ namespace Biblioteca.Data.SQLServer
         //Tabla de la bd donde ira los datos
         public virtual DbSet<Usuarios> Usuarios { get; set; }
         public virtual DbSet<Libros> Libros { get; set; }
-
         public virtual DbSet<Autores> Autores { get; set; }
+        public virtual DbSet<Prestamos> Prestamos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
