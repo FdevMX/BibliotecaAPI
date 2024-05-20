@@ -17,6 +17,13 @@ namespace Biblioteca.Data.SQLServer
         public virtual DbSet<Autores> Autores { get; set; }
         public virtual DbSet<Prestamos> Prestamos { get; set; }
 
+
+
+        public virtual DbSet<Devoluciones> Devoluciones { get; set; }
+
+
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
