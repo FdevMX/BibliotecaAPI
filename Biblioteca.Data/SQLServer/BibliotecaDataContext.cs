@@ -25,6 +25,17 @@ namespace Biblioteca.Data.SQLServer
 
 
 
+
+
+
+
+
+
+
+
+
+
+        public virtual DbSet<Editoriales> Editoriales { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

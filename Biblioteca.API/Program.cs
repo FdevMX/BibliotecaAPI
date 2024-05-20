@@ -22,6 +22,17 @@ builder.Services.AddTransient<IFacturas, FacturasService>();
 
 builder.Services.AddTransient<IDevoluciones, DevolucionesService>();
 
+
+
+
+
+
+
+
+
+
+
+builder.Services.AddTransient<IEditoriales, EditorialesService>();
 //Activar Swagger
 builder.Services.AddSwaggerGen();
 
