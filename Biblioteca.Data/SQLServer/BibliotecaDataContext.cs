@@ -16,6 +16,7 @@ namespace Biblioteca.Data.SQLServer
         public virtual DbSet<Libros> Libros { get; set; }
         public virtual DbSet<Autores> Autores { get; set; }
         public virtual DbSet<Prestamos> Prestamos { get; set; }
+        public virtual DbSet<Facturas> Facturas { get; set; }
 
 
 
