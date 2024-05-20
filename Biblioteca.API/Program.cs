@@ -18,6 +18,17 @@ builder.Services.AddTransient<ILibros, LibrosService>();
 builder.Services.AddTransient<IAutores, AutoresService>();
 builder.Services.AddTransient<IPrestamos, PrestamosService>();
 
+
+
+
+
+
+
+
+
+
+
+builder.Services.AddTransient<IEditoriales, EditorialesService>();
 //Activar Swagger
 builder.Services.AddSwaggerGen();
 
