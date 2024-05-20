@@ -16,22 +16,6 @@ builder.Services.AddTransient<ISeguridad, SeguridadService>();
 builder.Services.AddTransient<IUsuarios, UsuariosService>();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-builder.Services.AddTransient<IGeneros, GenerosService>();
-
 //Activar Swagger
 builder.Services.AddSwaggerGen();
 
