@@ -15,7 +15,6 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<ISeguridad, SeguridadService>();
 builder.Services.AddTransient<IUsuarios, UsuariosService>();
 
-
 //Activar Swagger
 builder.Services.AddSwaggerGen();
 
