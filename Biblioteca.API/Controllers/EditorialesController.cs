@@ -13,7 +13,6 @@ namespace Biblioteca.API.Controllers
         public EditorialesController(IEditoriales editoriales)
         {
             _editoriales = editoriales;
-
         }
 
         [HttpPost("GuardarEditorial")]
@@ -36,7 +35,6 @@ namespace Biblioteca.API.Controllers
             {
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
             }
-
         }
 
         [HttpGet("ListarEditorial")]
@@ -44,7 +42,6 @@ namespace Biblioteca.API.Controllers
         {
             var resultado = await this._editoriales.ListarEditoriales();
             return Ok(resultado);
-
         }
 
         [HttpPut("ActualizarEditorial")]
@@ -65,12 +62,9 @@ namespace Biblioteca.API.Controllers
 
             }
             catch (Exception ex)
-
             {
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message} " });
             }
-
-
         }
 
         [HttpDelete("EliminarEditorial/{editorialid}")]
