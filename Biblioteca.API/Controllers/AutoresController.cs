@@ -22,13 +22,13 @@ namespace Biblioteca.API.Controllers
             {
                 var resultado = await _autores.GuardarAutor(autores);
 
-                if (resultado)
+                if (resultado.Success)
                 {
-                    return Ok(new { mensaje = "Autor agregado correctamente" });
+                    return Ok(new { mensaje = resultado.Message });
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al agregar el autor" });
+                    return BadRequest(new { mensaje = resultado.Message });
                 }
             }
             catch (Exception ex)
@@ -51,13 +51,13 @@ namespace Biblioteca.API.Controllers
             {
                 var resultado = await _autores.ActualizarAutor(autores);
 
-                if (resultado)
+                if (resultado.Success)
                 {
-                    return Ok(new { mensaje = "Autor actualizado correctamente" });
+                    return Ok(new { mensaje = resultado.Message });
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al actualizar el autor" });
+                    return BadRequest(new { mensaje = resultado.Message });
                 }
             }
             catch (Exception ex)
