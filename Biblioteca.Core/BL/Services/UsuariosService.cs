@@ -22,6 +22,17 @@ namespace Biblioteca.Core.BL.Services
 
                 if (consulta != null)
                 {
+                    // Instancia del servicio de encriptación
+                    var encryptionService = new EncryptionService();
+
+                    // Verificar si se está actualizando la contraseña
+                    if (!string.IsNullOrEmpty(usuarios.pasword))
+                    {
+                        // Cifrar la nueva contraseña
+                        var hashedPassword = encryptionService.HashPassword(usuarios.pasword);
+                        consulta.pasword = hashedPassword;
+                    }
+
                     consulta.nombre = usuarios.nombre;
                     consulta.apellidos = usuarios.apellidos;
                     consulta.direccion = usuarios.direccion;
@@ -31,7 +42,7 @@ namespace Biblioteca.Core.BL.Services
                     consulta.telefono = usuarios.telefono;
                     consulta.rol_usuario = usuarios.rol_usuario;
                     consulta.name_user = usuarios.name_user;
-                    consulta.pasword = usuarios.pasword;
+                    //consulta.pasword = usuarios.pasword;
 
                     result = conexion.SaveChanges() > 0;
                 }
@@ -71,6 +82,9 @@ namespace Biblioteca.Core.BL.Services
                 {
                     return new OperationResult { Success = false, Message = "El nombre de usuario ya está en uso" };
                 }
+                
+                var encryptionService = new EncryptionService();
+                var hashedPassword = encryptionService.HashPassword(usuarios.pasword);
 
                 Usuarios nuevoUsuario = new Usuarios
                 {
@@ -83,7 +97,7 @@ namespace Biblioteca.Core.BL.Services
                     telefono = usuarios.telefono,
                     rol_usuario = usuarios.rol_usuario,
                     name_user = usuarios.name_user,
-                    pasword = usuarios.pasword
+                    pasword = hashedPassword
                 };
 
                 conexion.Usuarios.Add(nuevoUsuario);
@@ -92,41 +106,7 @@ namespace Biblioteca.Core.BL.Services
                 return new OperationResult { Success = resultado, Message = resultado ? "Usuario guardado correctamente" : "Error al guardar el usuario" };
             }
         }
-
-        /*
-        public Task<bool> GuardarUsuario(Usuarios usuarios)
-        {
-            bool result = false;
-            using (var conexion = new Data.SQLServer.BibliotecaDataContext())
-            {
-                var consulta = (from c in conexion.Usuarios
-                                where c.usuario_id == usuarios.usuario_id
-                                select c).FirstOrDefault();
-
-                if (consulta == null)
-                {
-                    Usuarios user = new Usuarios();
-
-                    user.nombre = usuarios.nombre;
-                    user.apellidos = usuarios.apellidos;
-                    user.direccion = usuarios.direccion;
-                    user.ciudad = usuarios.ciudad;
-                    user.pais = usuarios.pais;
-                    user.email = usuarios.email;
-                    user.telefono = usuarios.telefono;
-                    user.rol_usuario = usuarios.rol_usuario;
-                    user.name_user = usuarios.name_user;
-                    user.pasword = usuarios.pasword;
-
-                    conexion.Usuarios.Add(user);
-                    result = conexion.SaveChanges() > 0;
-                }
-            }
-
-            return Task.FromResult(result);
-        }
-        */
-
+        
         public Task<List<Usuarios>> ListarUsuarios()
         {
             List<Usuarios> list = new List<Usuarios>();
@@ -154,33 +134,8 @@ namespace Biblioteca.Core.BL.Services
                 }
 
                 return Task.FromResult(list);
-
             }
 
         }
-
-
-
-
-        /*
-        public Task<bool> EliminarUsuario(Usuarios usuarios)
-        {
-            bool result = false;
-            using (var conexion = new Data.SQLServer.BibliotecaDataContext())
-            {
-                var consulta = (from c in conexion.Usuarios
-                                where c.usuario_id == usuarios.usuario_id
-                                select c).FirstOrDefault();
-
-                if (consulta != null)
-                {
-                    conexion.Usuarios.Remove(consulta);
-                    result = conexion.SaveChanges() > 0;
-                }
-            }
-
-            return Task.FromResult(result);
-        }
-        */
     }
 }

@@ -12,18 +12,25 @@ namespace Biblioteca.Core.BL.Services
     {
         public async Task<Usuarios> IniciarSesion(LoginData loginData)
         {
-            //Usuarios? consulta = new Usuarios();
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
-                var consulta = (from c in conexion.Usuarios
-                                where c.name_user == loginData.name_user &&
-                                      c.pasword == loginData.pasword
-                                select c).FirstOrDefault();
+                var usuario = conexion.Usuarios.FirstOrDefault(u => u.name_user == loginData.name_user);
 
-                //return await Task.FromResult(consulta ?? new Usuarios());
-                return await Task.FromResult(consulta);
+                if (usuario != null)
+                {
+                    var encryptionService = new EncryptionService();
+                    var hashedPassword = encryptionService.HashPassword(loginData.pasword);
+
+                    if (hashedPassword == usuario.pasword)
+                    {
+                        // La contraseña es correcta
+                        return usuario;
+                    }
+                }
+
+                // La contraseña es incorrecta
+                return null;
             }
         }
-
     }
 }
