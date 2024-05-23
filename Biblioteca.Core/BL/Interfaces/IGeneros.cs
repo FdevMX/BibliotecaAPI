@@ -12,8 +12,8 @@ namespace Biblioteca.Core.BL.Interfaces
     public interface IGeneros
     {
         // Task para devolver asyncronos y nos sirve para evitar el colapso del programa
-        Task<bool> GuardarGenero(Generos generos);
-        Task<bool> ActualizarGenero(Generos generos);
+        Task<OperationResult> GuardarGenero(Generos generos);
+        Task<OperationResult> ActualizarGenero(Generos generos);
         Task<bool> EliminarGenero(int generoId);
         Task<List<Generos>> ListarGeneros();
     }
