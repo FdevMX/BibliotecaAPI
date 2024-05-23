@@ -14,7 +14,7 @@ namespace Biblioteca.Core.BL.Interfaces
     //nos sirve para eviar un colapso del programa
     {
         Task<bool> GuardarEditorial(Editoriales editoriales);
-        Task<bool> ActualizarEditorial(Editoriales editoriales);
+        Task<OperationResult> ActualizarEditorial(Editoriales editoriales);
         Task<bool> EliminarEditorial(int editoriales_id);
         Task<List<Editoriales>> ListarEditoriales();
     }
