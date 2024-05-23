@@ -85,7 +85,6 @@ namespace Biblioteca.API.Controllers
             {
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
             }
-
         }
     }
 }

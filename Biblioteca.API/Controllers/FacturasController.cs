@@ -13,7 +13,6 @@ namespace Biblioteca.API.Controllers
         }
 
         [HttpPost("GuardarFactura")]
-
         public async Task<IActionResult> GuardarFactura([FromBody] Facturas facturas)
         {
             try
@@ -84,7 +83,6 @@ namespace Biblioteca.API.Controllers
             {
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
             }
-
         }
     }
 }

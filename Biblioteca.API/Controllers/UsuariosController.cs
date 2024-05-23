@@ -42,7 +42,6 @@ namespace Biblioteca.API.Controllers
         [HttpGet("ListarUsuarios")]
         public async Task<IActionResult> ListarUsuarios()
         {
-
             var resultado = await this._usuarios.ListarUsuarios();
             return Ok(resultado);
         }
@@ -90,30 +89,5 @@ namespace Biblioteca.API.Controllers
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
             }
         }
-
-
-        /*
-        [HttpPost("GuardarUsuario")]
-        public async Task<IActionResult> GuardarUsuario([FromBody] Usuarios usuarios)
-        {
-            var resultado = await _usuarios.GuardarUsuario(usuarios);
-            // Para verificar si hay error
-            if (resultado == false)
-            {
-                return BadRequest(resultado);
-            }
-            return Ok(resultado);
-        }
-
-        [HttpDelete("EliminarUsuario")]
-        public async Task<IActionResult> EliminarUsuario([FromBody] Usuarios usuarios)
-        {
-            var resultado = await this._usuarios.EliminarUsuario(usuarios);
-            if (resultado == false)
-            {
-                return BadRequest(resultado);
-            }
-            return Ok(resultado);
-        }*/
     }
 }

@@ -15,13 +15,7 @@ namespace Biblioteca.API.Controllers
         {
             this.BLSeguridad = seguridad;
         }
-
-        /*[HttpGet("IniciarSesion")]
-        public IActionResult IniciarSesion(string Usuario, string Password)
-        {
-            return Ok("Acceso correcto");
-        }*/
-
+        
         [HttpGet("IniciarSesion")]
         public async Task<IActionResult> IniciarSesion(string Usuario, string Password)
         {
@@ -35,8 +29,6 @@ namespace Biblioteca.API.Controllers
 
             if (resultado != null)
             {
-                // El usuario existe, puedes procesar la información del usuario aquí
-                //return Ok(resultado);
                 return Ok(new
                 {
                     mensaje = "Inicio de sesion exitoso",
