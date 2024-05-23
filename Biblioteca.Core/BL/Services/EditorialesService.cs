@@ -74,9 +74,6 @@ namespace Biblioteca.Core.BL.Services
 
             }
             return Task.FromResult(result);
-
-
-
         }
 
         public Task<List<Editoriales>> ListarEditoriales()

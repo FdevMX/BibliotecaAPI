@@ -31,9 +31,6 @@ namespace Biblioteca.Core.BL.Services
             }
             return Task.FromResult(result);
         }
-                
-            
-        
 
         public async Task<bool> EliminarGenero(int generoId)
         {
