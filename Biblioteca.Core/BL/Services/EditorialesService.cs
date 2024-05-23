@@ -10,9 +10,8 @@ namespace Biblioteca.Core.BL.Services
 {
     public class EditorialesService : IEditoriales
     {
-        public Task<bool> ActualizarEditorial(Editoriales editoriales)
+        public Task<OperationResult> ActualizarEditorial(Editoriales editoriales)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
                 var consulta = (from c in conexion.Editoriales
@@ -21,17 +20,31 @@ namespace Biblioteca.Core.BL.Services
 
                 if (consulta != null)
                 {
+                    var consultaDuplicado = conexion.Editoriales.FirstOrDefault(
+                        c => c.nombre == editoriales.nombre &&
+                        c.direccion == editoriales.direccion &&
+                        c.ciudad == editoriales.ciudad &&
+                        c.pais == editoriales.pais &&
+                        c.editorial_id != editoriales.editorial_id);
+                    
+
+                    if (consultaDuplicado != null)
+                    {
+                        return new OperationResult { Success = false, Message = "Ya existe un editorial con los mismos datos" };
+                    }
+
                     consulta.nombre = editoriales.nombre;
                     consulta.direccion = editoriales.direccion;
                     consulta.ciudad = editoriales.ciudad;
                     consulta.pais = editoriales.pais;
                     consulta.descripcion = editoriales.descripcion;
 
-                    result = conexion.SaveChanges() > 0;
+                    var resultado = await conexion.SaveChangesAsync() > 0;
+                    return new OperationResult { Success = resultado, Message = resultado ? "Editorial actualizado correctamente" : "Error al actualizar el editorial" };                   
                 }
 
+                return new OperationResult { Success = false, Message = "No se encontró el editorial a actualizar" };
             }
-            return Task.FromResult(result);
         }
 
         public async Task<bool> EliminarEditorial(int editorialId)
