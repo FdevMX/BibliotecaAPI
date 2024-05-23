@@ -10,9 +10,8 @@ namespace Biblioteca.Core.BL.Services
 {
     public class LibrosService : ILibros
     {
-        public Task<bool> ActualizarLibro(Libros libros)
+        public async Task<OperationResult> ActualizarLibro(Libros libros)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
                 var consulta = (from c in conexion.Libros
@@ -21,6 +20,15 @@ namespace Biblioteca.Core.BL.Services
 
                 if (consulta != null)
                 {
+                    var consultaISBN = conexion.Libros.FirstOrDefault(
+                        c => c.isbn == libros.isbn &&
+                             c.libro_id != libros.libro_id);
+
+                    if (consultaISBN != null)
+                    {
+                        return new OperationResult { Success = false, Message = "El ISBN ya está en uso por otro libro" };
+                    }
+
                     consulta.titulo = libros.titulo;
                     consulta.isbn = libros.isbn;
                     consulta.descripcion = libros.descripcion;
@@ -33,10 +41,12 @@ namespace Biblioteca.Core.BL.Services
                     consulta.genero_id = libros.genero_id;
                     consulta.copy_dispo = libros.copy_dispo;
 
-                    result = conexion.SaveChanges() > 0;
+                    var resultado = await conexion.SaveChangesAsync() > 0;
+                    return new OperationResult { Success = resultado, Message = resultado ? "Libro actualizado correctamente" : "Error al actualizar el libro" };
                 }
+
+                return new OperationResult { Success = false, Message = "No se encontró el libro a actualizar" };
             }
-            return Task.FromResult(result);
         }
 
         public async Task<bool> EliminarLibro(int libroId)
@@ -54,36 +64,37 @@ namespace Biblioteca.Core.BL.Services
             return result;
         }
 
-        public Task<bool> GuardarLibro(Libros libros)
+        public async Task<OperationResult> GuardarLibro(Libros libros)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
-                var consulta = (from c in conexion.Libros
-                                where c.libro_id == libros.libro_id
-                                select c).FirstOrDefault();
+                var consultaISBN = conexion.Libros.FirstOrDefault(c => c.isbn == libros.isbn);
 
-                if (consulta == null)
+                if (consultaISBN != null)
                 {
-                    Libros lib = new Libros();
-
-                    lib.titulo = libros.titulo;
-                    lib.isbn = libros.isbn;
-                    lib.descripcion = libros.descripcion;
-                    lib.anio_pub = libros.anio_pub;
-                    lib.num_paginas = libros.num_paginas;
-                    lib.idioma = libros.idioma;
-                    lib.estado = libros.estado;
-                    lib.autor_id = libros.autor_id;
-                    lib.editorial_id = libros.editorial_id;
-                    lib.genero_id = libros.genero_id;
-                    lib.copy_dispo = libros.copy_dispo;
-
-                    conexion.Libros.Add(lib);
-                    result = conexion.SaveChanges() > 0;
+                    return new OperationResult { Success = false, Message = "Cuidado! ⚠️. Hay un libro con el mismo ISBN" };
                 }
+
+                Libros lib = new Libros
+                {
+                    titulo = libros.titulo,
+                    isbn = libros.isbn,
+                    descripcion = libros.descripcion,
+                    anio_pub = libros.anio_pub,
+                    num_paginas = libros.num_paginas,
+                    idioma = libros.idioma,
+                    estado = libros.estado,
+                    autor_id = libros.autor_id,
+                    editorial_id = libros.editorial_id,
+                    genero_id = libros.genero_id,
+                    copy_dispo = libros.copy_dispo
+                };
+
+                conexion.Libros.Add(lib);
+                var resultado = await conexion.SaveChangesAsync() > 0;
+
+                return new OperationResult { Success = resultado, Message = resultado ? "Libro agregado correctamente" : "Error al agregar el libro" };
             }
-            return Task.FromResult(result);
         }
 
         public Task<List<Libros>> ListarLibros()
