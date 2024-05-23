@@ -10,28 +10,40 @@ namespace Biblioteca.Core.BL.Services
 {
     public class AutoresService : IAutores
     {
-        public Task<bool> ActualizarAutor(Autores autores)
+        public async Task<OperationResult> ActualizarAutor(Autores autores)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
                 var consulta = (from c in conexion.Autores
                                 where c.autor_id == autores.autor_id
                                 select c).FirstOrDefault();
+
                 if (consulta != null)
                 {
+                    var consultaDuplicado = conexion.Autores.FirstOrDefault(
+                        c => c.nombre == autores.nombre &&
+                             c.apellidos == autores.apellidos &&
+                             c.nacimiento == autores.nacimiento &&
+                             c.nacionalidad == autores.nacionalidad &&
+                             c.autor_id != autores.autor_id);
+
+                    if (consultaDuplicado != null)
+                    {
+                        return new OperationResult { Success = false, Message = "Ya existe un autor con los mismos datos" };
+                    }
+
                     consulta.nombre = autores.nombre;
                     consulta.apellidos = autores.apellidos;
                     consulta.nacimiento = autores.nacimiento;
                     consulta.nacionalidad = autores.nacionalidad;
                     consulta.biografia = autores.biografia;
 
-                    result = conexion.SaveChanges() > 0;
-
+                    var resultado = await conexion.SaveChangesAsync() > 0;
+                    return new OperationResult { Success = resultado, Message = resultado ? "Autor actualizado correctamente" : "Error al actualizar el autor" };
                 }
 
+                return new OperationResult { Success = false, Message = "No se encontró el autor a actualizar" };
             }
-            return Task.FromResult(result);
         }
 
         public async Task<bool> EliminarAutor(int autorId)
@@ -49,33 +61,35 @@ namespace Biblioteca.Core.BL.Services
             return result;
         }
 
-        public Task<bool> GuardarAutor(Autores autores)
+        public async Task<OperationResult> GuardarAutor(Autores autores)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
-                var consulta = (from c in conexion.Autores
-                                where c.autor_id == autores.autor_id
-                                select c).FirstOrDefault();
+                var consulta = conexion.Autores.FirstOrDefault(
+                    c => c.nombre == autores.nombre &&
+                         c.apellidos == autores.apellidos &&
+                         c.nacimiento == autores.nacimiento &&
+                         c.nacionalidad == autores.nacionalidad);
 
-                if (consulta == null)
+                if (consulta != null)
                 {
-                    Autores aut = new Autores();
-
-                    aut.nombre = autores.nombre;
-                    aut.apellidos = autores.apellidos;
-                    aut.nacimiento = autores.nacimiento;
-                    aut.nacionalidad = autores.nacionalidad;
-                    aut.biografia = autores.biografia;
-
-                    conexion.Autores.Add(aut);
-                    result = conexion.SaveChanges() > 0;
-
+                    return new OperationResult { Success = false, Message = "Ya existe un autor con los mismos datos" };
                 }
 
-            }
-            return Task.FromResult(result);
+                Autores aut = new Autores
+                {
+                    nombre = autores.nombre,
+                    apellidos = autores.apellidos,
+                    nacimiento = autores.nacimiento,
+                    nacionalidad = autores.nacionalidad,
+                    biografia = autores.biografia
+                };
 
+                conexion.Autores.Add(aut);
+                var resultado = await conexion.SaveChangesAsync() > 0;
+
+                return new OperationResult { Success = resultado, Message = resultado ? "Autor agregado correctamente" : "Error al agregar el autor" };
+            }
         }
 
         public Task<List<Autores>> ListarAutores()
