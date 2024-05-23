@@ -18,12 +18,23 @@ namespace Biblioteca.API.Controllers
         [HttpPost("GuardarLibro")]
         public async Task<IActionResult> GuardarLibro([FromBody] Libros libros)
         {
-            var resultado = await _libros.GuardarLibro(libros);
-            if (resultado == false)
+            try
             {
-                return BadRequest(resultado);
+                var resultado = await _libros.GuardarLibro(libros);
+
+                if (resultado.Success)
+                {
+                    return Ok(new { mensaje = resultado.Message });
+                }
+                else
+                {
+                    return BadRequest(new { mensaje = resultado.Message });
+                }
             }
-            return Ok(resultado);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
+            }
         }
 
         [HttpGet("ListarLibros")]
@@ -40,13 +51,13 @@ namespace Biblioteca.API.Controllers
             {
                 var resultado = await _libros.ActualizarLibro(libros);
 
-                if (resultado)
+                if (resultado.Success)
                 {
-                    return Ok(new { mensaje = "Libro actualizado correctamente" });
+                    return Ok(new { mensaje = resultado.Message });
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al actualizar el libro" });
+                    return BadRequest(new { mensaje = resultado.Message });
                 }
             }
             catch (Exception ex)
