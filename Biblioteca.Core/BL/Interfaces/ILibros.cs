@@ -13,9 +13,9 @@ namespace Biblioteca.Core.BL.Interfaces
     {
         // Task devuelve valores asyncronos y
         // nos sirve para evitar el colapso del programa
-        
-        Task<bool> GuardarLibro(Libros libros);
-        Task<bool> ActualizarLibro(Libros libros);
+
+        Task<OperationResult> GuardarLibro(Libros libros);
+        Task<OperationResult> ActualizarLibro(Libros libros);
         Task<bool> EliminarLibro(int libroId);
         Task<List<Libros>> ListarLibros();
     }
