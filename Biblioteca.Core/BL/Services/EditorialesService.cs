@@ -10,7 +10,7 @@ namespace Biblioteca.Core.BL.Services
 {
     public class EditorialesService : IEditoriales
     {
-        public Task<OperationResult> ActualizarEditorial(Editoriales editoriales)
+        public async Task<OperationResult> ActualizarEditorial(Editoriales editoriales)
         {
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
@@ -22,10 +22,10 @@ namespace Biblioteca.Core.BL.Services
                 {
                     var consultaDuplicado = conexion.Editoriales.FirstOrDefault(
                         c => c.nombre == editoriales.nombre &&
-                        c.direccion == editoriales.direccion &&
-                        c.ciudad == editoriales.ciudad &&
-                        c.pais == editoriales.pais &&
-                        c.editorial_id != editoriales.editorial_id);
+                            c.direccion == editoriales.direccion &&
+                            c.ciudad == editoriales.ciudad &&
+                            c.pais == editoriales.pais &&
+                            c.editorial_id != editoriales.editorial_id);
                     
 
                     if (consultaDuplicado != null)
@@ -62,31 +62,35 @@ namespace Biblioteca.Core.BL.Services
             return result;
         }
 
-        public Task<bool> GuardarEditorial(Editoriales editoriales)
+        public async Task<OperationResult> GuardarEditorial(Editoriales editoriales)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
-                var consulta = (from c in conexion.Editoriales
-                                where c.editorial_id == editoriales.editorial_id
-                                select c).FirstOrDefault();
+                var consulta = conexion.Editoriales.FirstOrDefault(
+                        c => c.nombre == editoriales.nombre &&
+                            c.direccion == editoriales.direccion &&
+                            c.ciudad == editoriales.ciudad &&
+                            c.pais == editoriales.pais);
 
-                if (consulta == null)
+                if (consulta != null)
                 {
-                    Editoriales edit = new Editoriales();
-
-                    edit.nombre = editoriales.nombre;
-                    edit.direccion = editoriales.direccion;
-                    edit.ciudad = editoriales.ciudad;
-                    edit.pais = editoriales.pais;
-                    edit.descripcion = editoriales.descripcion;
-
-                    conexion.Editoriales.Add(edit);
-                    result = conexion.SaveChanges() > 0;
+                    return new OperationResult { Success = false, Message = "Ya existe un editorial con los mismos datos" };
                 }
 
+                Editoriales edit = new Editoriales
+                {
+                    nombre = editoriales.nombre,
+                    direccion = editoriales.direccion,
+                    ciudad = editoriales.ciudad,
+                    pais = editoriales.pais,
+                    descripcion = editoriales.descripcion
+                };
+
+                conexion.Editoriales.Add(edit);
+                var resultado = await conexion.SaveChangesAsync() > 0;
+
+                return new OperationResult { Success = resultado, Message = resultado ? "Editorial agregado correctamente" : "Error al agregar el editorial" };
             }
-            return Task.FromResult(result);
         }
 
         public Task<List<Editoriales>> ListarEditoriales()

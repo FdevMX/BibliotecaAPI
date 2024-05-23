@@ -19,13 +19,23 @@ namespace Biblioteca.API.Controllers
         [HttpPost("GuardarEditorial")]
         public async Task<IActionResult> GuardarEditorial([FromBody] Editoriales editoriales)
         {
-            var resultado = await _editoriales.GuardarEditorial(editoriales);
-            if (resultado == false)
+            try
             {
-                return BadRequest(resultado);
-            }
-            return Ok(resultado);
+                var resultado = await _editoriales.GuardarEditorial(editoriales);
 
+                if (resultado.Success)
+                {
+                    return Ok(new { mensaje = resultado.Message });
+                }
+                else
+                {
+                    return BadRequest(new { mensaje = resultado.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
+            }
 
         }
 
@@ -44,13 +54,13 @@ namespace Biblioteca.API.Controllers
             {
                 var resultado = await _editoriales.ActualizarEditorial(editoriales);
 
-                if (resultado)
+                if (resultado.Success)
                 {
-                    return Ok(new { mensaje = "Editorial actualizado correctamente" });
+                    return Ok(new { mensaje = resultado.Message });
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al actualizar el editorial" });
+                    return BadRequest(new { mensaje = resultado.Message });
                 }
 
             }

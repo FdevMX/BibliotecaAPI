@@ -13,7 +13,7 @@ namespace Biblioteca.Core.BL.Interfaces
     //task devuenve valores asyncronos y 
     //nos sirve para eviar un colapso del programa
     {
-        Task<bool> GuardarEditorial(Editoriales editoriales);
+        Task<OperationResult> GuardarEditorial(Editoriales editoriales);
         Task<OperationResult> ActualizarEditorial(Editoriales editoriales);
         Task<bool> EliminarEditorial(int editoriales_id);
         Task<List<Editoriales>> ListarEditoriales();
