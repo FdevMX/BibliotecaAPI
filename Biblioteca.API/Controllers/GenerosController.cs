@@ -18,12 +18,23 @@ namespace Biblioteca.API.Controllers
         [HttpPost("GuardarGenero")]
         public async Task<IActionResult> GuardarGenero([FromBody] Generos generos)
         {
-            var resultado = await _generos.GuardarGenero(generos);
-            if (resultado == false)
+            try
             {
-                return BadRequest(resultado);
+                var resultado = await _generos.GuardarGenero(generos);
+
+                if (resultado.Success)
+                {
+                    return Ok(new { mensaje = resultado.Message });
+                }
+                else
+                {
+                    return BadRequest(new { mensaje = resultado.Message });
+                }
             }
-            return Ok(resultado);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
+            }
         }
 
         [HttpGet("ListarGeneros")]
@@ -40,18 +51,19 @@ namespace Biblioteca.API.Controllers
             {
                 var resultado = await _generos.ActualizarGenero(genero);
 
-                if (resultado)
+                if (resultado.Success)
                 {
-                    return Ok(new { mensaje = "Genero actualizado correctamente" });
+                    return Ok(new { mensaje = resultado.Message });
                 }
                 else
                 {
-                    return BadRequest(new { mensaje = "Error al actualizar libro" });
+                    return BadRequest(new { mensaje = resultado.Message });
                 }
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
+                return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message} " });
             }
         }
 
@@ -75,12 +87,6 @@ namespace Biblioteca.API.Controllers
             {
                 return StatusCode(500, new { mensaje = $"Error inesperado: {ex.Message}" });
             }
-
-
-
-
-
-
         }
     }
 }
