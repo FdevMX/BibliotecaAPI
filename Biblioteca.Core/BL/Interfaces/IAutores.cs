@@ -11,8 +11,8 @@ namespace Biblioteca.Core.BL.Interfaces
     public interface IAutores
     {
         //Task para devolver asincronos y nos sirve para evitar el colapso del programa 
-        Task<bool> GuardarAutor(Autores autores);
-        Task<bool> ActualizarAutor(Autores autores);
+        Task<OperationResult> GuardarAutor(Autores autores);
+        Task<OperationResult> ActualizarAutor(Autores autores);
         Task<bool> EliminarAutor(int AutorId);
         Task<List<Autores>> ListarAutores();
     }
