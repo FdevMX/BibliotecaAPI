@@ -10,26 +10,33 @@ namespace Biblioteca.Core.BL.Services
 {
     public class GenerosService : IGeneros
     {
-        public Task<bool> ActualizarGenero(Generos generos)
+        public async Task<OperationResult> ActualizarGenero(Generos generos)
         {
-            bool result = false;
             using (var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
                 var consulta = (from c in conexion.Generos
                                 where c.genero_id == generos.genero_id
                                 select c).FirstOrDefault();
                 if (consulta != null)
-
                 {
-                    consulta.genero_id = generos.genero_id;
+                    var consultaDuplicado = conexion.Generos.FirstOrDefault(
+                        c => c.nombre == generos.nombre &&
+                             c.genero_id != generos.genero_id);
+
+                    if ( consultaDuplicado != null)
+                    {
+                        return new OperationResult { Success = false, Message = "Ya existe un genero con los mismos datos" };
+                    }
+                    
                     consulta.nombre = generos.nombre;
                     consulta.descripcion = generos.descripcion;
 
-                    result = conexion.SaveChanges() > 0;
+                    var resultado = await conexion.SaveChangesAsync() > 0;
+                    return new OperationResult { Success = resultado, Message = resultado ? "Genero actualizado correctamente" : "Error al actualizar el genero" };
 
                 }
+                return new OperationResult { Success = false, Message = "No se encontró el genero a actualizar" };
             }
-            return Task.FromResult(result);
         }
 
         public async Task<bool> EliminarGenero(int generoId)
@@ -47,28 +54,33 @@ namespace Biblioteca.Core.BL.Services
             return result;
         }
 
-        public Task<bool> GuardarGenero(Generos generos)
+        public async Task<OperationResult> GuardarGenero(Generos generos)
         {
-            bool result = false;
             using(var conexion = new Data.SQLServer.BibliotecaDataContext())
             {
-                var consulta = (from c in conexion.Generos
-                                where c.genero_id == generos.genero_id
-                                select c).FirstOrDefault();
-                if (consulta == null)
+                var consulta = conexion.Generos.FirstOrDefault(
+                    c => c.nombre == generos.nombre);
+                
+                if (consulta != null)
                 {
-                    Generos gen = new Generos();
-
-                    
-                    gen.nombre = generos.nombre;
-                    gen.descripcion = generos.descripcion;
-
-                    conexion.Generos.Add(gen);
-                    result = conexion.SaveChanges() > 0;
-
+                    return new OperationResult { Success = false, Message = "Ya existe un genero con los mismos datos" };
                 }
+                
+                Generos gen = new Generos
+                {
+                    nombre = generos.nombre,
+                    descripcion = generos.descripcion
+                };
+                
+                conexion.Generos.Add(gen);
+                var resultado = await conexion.SaveChangesAsync() > 0;
+
+                return new OperationResult
+                {
+                    Success = resultado,
+                    Message = resultado ? "Genero agregado correctamente" : "Error al agregar el genero"
+                };
             }
-            return Task.FromResult(result);
         }
 
         public Task<List<Generos>> ListarGeneros()
